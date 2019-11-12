@@ -1,0 +1,9 @@
+{
+	"cities": [{
+		"city": "Sao Paulo",
+		"latlong": [0, 0]
+	}, {
+		"city": "Rio de Janeiro",
+		"latlong": [30, 30]
+	}]
+}
