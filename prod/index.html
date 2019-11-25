@@ -2,92 +2,124 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <!-- <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400,600,700|IBM+Plex+Sans:200,400&display=swap" rel="stylesheet"> -->
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:200,300,300i,400,400i,600,600i,700|IBM+Plex+Sans:200,300,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/leaflet.css">
+    <script src="assets/leaflet-src.js"></script>
+     <link rel="stylesheet" href="assets/screen.css" />
+    <link rel="stylesheet" href="assets/MarkerCluster.css" />
+    <link rel="stylesheet" href="assets/MarkerCluster.Default.css" />
+    <script src="assets/leaflet.markercluster-src.js"></script>
     <link rel="stylesheet" type="text/css" href="assets/style.css">
-    <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
     <script src="assets/d3.min.js" charset="utf-8"></script>
-    <script src="assets/topojson-client.min.js" charset="utf-8"></script>
+
 
     <title></title>
   </head>
   <body>
-    <div class="menu">
-      1
-    </div>
-    <div id="main">
-      <div class="map">
-        
-      </div>
-      <div class="side">
-        <div class="s01">
-          Cidade
-        </div>
-        <div class="s02">
-          <p>Sistemas</p>
-          <p class="bignumber">02</p>
-        </div>
-        <div class="s03">
-          <div class="buttonfilter">Todos</div><div class="buttonselect">test2</div>
-        </div>
-        <div class="s04">
-          <p>Emissões de CO2 evitadas</p>
-          <p class="bignumber">02</p>
-        </div>
-        <div class="s05">
-          <div class="inner05">
-            <p>Estações</p>
-            <p class="bignumber">02</p>
-          </div>
-          <div class="inner05">
-            <p>Veículos</p>
-            <p class="bignumber">02</p>
-          </div>
-        </div>
-        <div class="graph_holder">
-          <div class="graph">
-            graph
-          </div>
-          <p class="keys">
-            keys
-          </p>
-        </div>
-        <div class="s06">
-          <div class="inner06">
-            <p>Viagens diárias</p>
-            <p class="bignumber">02</p>
-          </div>
-          <div class="inner05">
-            <p>Distancia <br>percorrida <br>por dia</p>
-            <!-- <p class="bignumber">02</p> -->
-          </div>
-          <div class="inner05">
-            <img>
-            <p class="smallnumber">03</p>
-          </div>
-        </div>
-        <div class="s07">
-          <div class="inner06">
-            <p>Usuários</p>
-            <p class="bignumber">02</p>
-          </div>
-          <div class="inner05">
-            <img>
-            <p>00</p>
-          </div>
-          <div class="inner05">
-            <img>
-            <p>00</p>
-          </div>
-        </div>
-        <div class="s08">
-          <p>15 a 29 anos: 00 | 30 a 59 anos: 00 <br>Acima de 60 anos: 00</p>
-        </div>
-        <div class="s09">
-          <p>Fontes dos dados</p>
-        </div>
-      </div>
-    </div>
+    <div class='bigcontainer'>
+      <div class='sides'></div>
+      <div class='total'>
+        <div class="menu">
+          <img src="assets/logo.svg" alt="logo" width="190px" height="100px">
 
+          <ul class="menu">
+            <li class="menuitem"><a href="index.html">Brasil</a></li>
+            <li class="menuitem"><a href="cidades.html">Cidades</a></li>
+            <li class="menuitem"><a href="operadoras.html">Operadoras</a></li>
+            <li class="menuitem"><a href="sobre.html">Sobre</a></li>
+            <li class="menuitem"><a href="publicacoes.html">Publicações</a></li>
+          </ul>
+          <a href="index.html">PT/EN</a>
+        </div>
+        <div id="main">
+          <div id="map">
+
+          </div>
+          <div class="side">
+            <div id="s01">
+
+            </div>
+            <div class="s02">
+              Sistemas<br><br>
+              <span class="bignumber">02</span>
+            </div>
+            <div class="s03">
+
+            </div>
+            <div class="s04">
+              Emissões de CO2 evitadas<br><br>
+              <span class="bignumber">02</span>
+            </div>
+            <div class="s05">
+              <div class="inner05" id="s05_01">
+                Estações<br><br>
+                <span class="bignumber">02</span>
+              </div>
+              <div class="inner05" id="s05_02">
+                Veículos<br><br>
+                <span class="bignumber">02</span>
+              </div>
+            </div>
+            <div class="graph_holder">
+              <div class="graph">
+
+              </div>
+
+              <div class="keys">
+                  <br>
+                  <svg width="10" height="10"><circle cx="5" cy="5" r="5" stroke="none" fill="#33D1C4"></svg>
+                  Bicicletas (<span class="bi"></span>)
+                  <svg width="10" height="10"><circle cx="5" cy="5" r="5" stroke="none" fill="#279BFF"></svg>
+                  Patinetes (<span class="pa"></span>)
+                  <svg width="10" height="10"><circle cx="5" cy="5" r="5" stroke="none" fill="#FF7F00"></svg>
+                  Bicicletas Elétricas (<span class="bc"></span>)
+
+
+              </div>
+            </div>
+            <div class="s06">
+              <div class="inner06" id="s06_01">
+                Viagens diárias<br><br>
+                <span class="bignumber">02</span>
+              </div>
+              <div class="inner05" id="s06_02">
+                <span style="line-height: 18px">Distancia <br>percorrida <br>por dia</span>
+                <!-- <p class="bignumber">02</p> -->
+              </div>
+              <div class="inner05" id="s06_03">
+                <img src="assets/distance.svg" alt="logo" width="32px" height="31px"><br>
+                <span class="smallnumber">x</span>
+              </div>
+            </div>
+            <div class="s07">
+              <div class="inner06" id="s07_01">
+                Usuários<br><br>
+                <span class="bignumber">02</span>
+              </div>
+              <div class="inner05" id="s07_02">
+                <img src="assets/homen.svg" alt="logo" width="11px" height="31px"><br>
+                <span class='demodata'></span>
+              </div>
+              <div class="inner05" id="s07_03">
+                <img src="assets/mulher.svg" alt="logo" width="15px" height="31px"><br>
+                <span class='demodata'></span>
+              </div>
+            </div>
+            <div class="s08">
+              15 a 29 anos: <span class='quinze'></span> | 30 a 59 anos: <span class='trinta'></span> | Acima de 60 anos: <span class='sessenta'></span>
+            </div>
+            <div class="s09">
+              Fontes dos dados
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class='sides'></div>
+    </div>
   </body>
-  <script src="assets/main.js" charset="utf-8"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script src="assets/main.js" charset="utf-8"  type="text/babel"></script>
+  <script src="assets/cluster.js" charset="utf-8"  type="text/babel"></script>
 </html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:200,300,300i,400,400i,600,600i|IBM+Plex+Sans:200,300,400,700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/leaflet.css">
+    <script src="assets/leaflet-src.js"></script>
+     <link rel="stylesheet" href="assets/screen.css" />
+    <link rel="stylesheet" href="assets/MarkerCluster.css" />
+    <link rel="stylesheet" href="assets/MarkerCluster.Default.css" />
+    <script src="assets/leaflet.markercluster-src.js"></script>
+    <link rel="stylesheet" type="text/css" href="assets/style.css">
+    <script src="assets/d3.min.js" charset="utf-8"></script>
+
+
+    <title></title>
+  </head>
+  <body>
+    <div class='bigcontainer'>
+      <div class='sides'></div>
+      <div class='total'>
+        <div class="menu">
+          <img src="assets/logo.svg" alt="logo" width="190px" height="100px">
+
+          <ul class="menu">
+            <li class="menuitem"><a href="index.html">Brasil</a></li>
+            <li class="menuitem"><a href="cidades.html">Cidades</a></li>
+            <li class="menuitem"><a href="operadoras.html">Operadoras</a></li>
+            <li class="menuitem"><a href="sobre.html">Sobre</a></li>
+            <li class="menuitem"><a href="publicacoes.html">Publicações</a></li>
+          </ul>
+          <a href="index.html">PT/EN</a>
+        </div>
+        <div class='artigo'>
+          <div class="head_geral">
+            Operadoras
+          </div>
+          <div class="doiscol">
+
+          </div>
+        </div>
+      </div>
+      <div class='sides'></div>
+    </div>
+  </body>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+
+
+    d3.json('assets/final_file_labmob_v2.json').then(data => {
+      console.log(data)
+      d3
+      .select('div.doiscol')
+      .selectAll('p')
+      .data(data.municipios)
+      .enter()
+      .append('p')
+      .html(d=>d.cidade)
+      ;
+
+    });
+
+  </script>
+  <!-- <script src="assets/main.js" charset="utf-8"  type="module"></script>
+  <script src="assets/cluster.js" charset="utf-8"  type="module"></script> -->
+</html>
