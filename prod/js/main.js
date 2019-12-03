@@ -10,7 +10,6 @@ function loadData(data){
 function missingData(data) {
     if (data === 'Dados não disponíveis') {
         let finalstring = '<span style="font-family:\'IBM Plex Mono\';color:#E0375E;font-style:Italic;font-weight:600;font-size:12px">' + data + '</span>'
-
         return finalstring;
     } else {
         return data;
@@ -129,7 +128,7 @@ function populateFields(data){
 
 };
 
-loadData('assets/final_file_labmob_v2.json')
+loadData('data/final_file_labmob_v2.json')
 
 // function createMap(data){
 //   let svgMap = d3.select('.map')
@@ -170,7 +169,7 @@ loadData('assets/final_file_labmob_v2.json')
 //   d3.json(data).then(data=> createMap(data)).then((estados) => displaydots(estados));
 // };
 
-// showMap('assets/test2.json')
+// showMap('data/test2.json')
 
 // displaydots = async(estados) => {
 //
@@ -215,6 +214,6 @@ loadData('assets/final_file_labmob_v2.json')
 //         ;
 //   }
 //
-//   d3.json('assets/final_file_labmob.json').then(data => attachDatatoDot(data.municipios));
+//   d3.json('data/final_file_labmob.json').then(data => attachDatatoDot(data.municipios));
 //
 // }

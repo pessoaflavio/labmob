@@ -2,16 +2,16 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:200,300,300i,400,400i,600,600i|IBM+Plex+Sans:200,300,400,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:200,300,300i,400,400i,600,600i,700|IBM+Plex+Sans:200,300,400&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="assets/leaflet.css">
-    <script src="assets/leaflet-src.js"></script>
-     <link rel="stylesheet" href="assets/screen.css" />
-    <link rel="stylesheet" href="assets/MarkerCluster.css" />
-    <link rel="stylesheet" href="assets/MarkerCluster.Default.css" />
-    <script src="assets/leaflet.markercluster-src.js"></script>
-    <link rel="stylesheet" type="text/css" href="assets/style.css">
-    <script src="assets/d3.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="style/leaflet.css">
+    <script src="js/leaflet-src.js"></script>
+     <link rel="stylesheet" href="style/screen.css" />
+    <link rel="stylesheet" href="style/MarkerCluster.css" />
+    <link rel="stylesheet" href="style/MarkerCluster.Default.css" />
+    <script src="js/leaflet.markercluster-src.js"></script>
+    <link rel="stylesheet" type="text/css" href="style/style.css">
+    <script src="js/d3.min.js" charset="utf-8"></script>
 
 
     <title></title>
@@ -21,7 +21,7 @@
       <div class='sides'></div>
       <div class='total'>
         <div class="menu">
-          <img src="assets/logo.svg" alt="logo" width="190px" height="100px">
+          <img src="img/logo.svg" alt="logo" width="190px" height="100px">
 
           <ul class="menu">
             <li class="menuitem"><a href="index.html">Brasil</a></li>
@@ -48,7 +48,7 @@
   <script type="text/babel">
 
 
-    d3.json('assets/final_file_labmob_v2.json').then(data => {
+    d3.json('data/final_file_labmob_v2.json').then(data => {
       console.log(data)
       d3
       .select('div.trescol')
@@ -62,6 +62,6 @@
     });
 
   </script>
-  <!-- <script src="assets/main.js" charset="utf-8"  type="module"></script>
-  <script src="assets/cluster.js" charset="utf-8"  type="module"></script> -->
+  <!-- <script src="js/main.js" charset="utf-8"  type="module"></script>
+  <script src="js/cluster.js" charset="utf-8"  type="module"></script> -->
 </html>

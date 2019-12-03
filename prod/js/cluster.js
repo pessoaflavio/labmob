@@ -21,7 +21,7 @@ function fillDiv(div,data,extradiv){
 
 
 
-const myRequest = new Request('assets/final_file_labmob_v2.json');
+const myRequest = new Request('data/final_file_labmob_v2.json');
 
 fetch(myRequest)
   .then(response => response.json())
@@ -57,8 +57,8 @@ fetch(myRequest)
     });
 
     var purpleIcon = L.icon({
-    iconUrl: 'assets/icon_v2.png',
-    shadowUrl: 'assets/shadow_v2.png',
+    iconUrl: 'img/icon_v2.png',
+    shadowUrl: 'img/shadow_v2.png',
 
     iconSize:     [16, 22], // size of the icon
     shadowSize:   [16, 12], // size of the shadow
@@ -69,7 +69,7 @@ fetch(myRequest)
 
 		var markers = L.markerClusterGroup({ chunkedLoading: true });
 
-    const brasil = new Request('assets/brazil_new.json')
+    const brasil = new Request('data/brazil_new.json')
 
     let myStyle = {
       'color': 'white',
