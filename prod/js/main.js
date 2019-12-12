@@ -94,7 +94,8 @@ function populateFields(data){
 
   mainHolder
   .select('#s01')
-  .html(data.local)
+  // .append('h3')
+  .html('<h3>' + data.local + '</h3>')
   ;
 
   mainHolder
@@ -106,7 +107,7 @@ function populateFields(data){
   mainHolder
   .select('.s03')
   .insert('div')
-  .attr('class', 'buttonfilter')
+  .attr('class', 'button')
   .html('<a href="sistemas.html">Lista de sistemas</a>')
   ;
 

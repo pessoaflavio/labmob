@@ -1,23 +1,104 @@
 // import {div,loadData,populateFields} from './main.js'
 
-// controla preenchimento da ficha lateral
-function missingData(data) {
-    if (data === 'Dados não disponíveis') {
-        let finalstring = '<span style="font-family:\'IBM Plex Mono\';color:#E0375E;font-style:Italic;font-weight:600;font-size:12px">' + data + '</span>'
+////////////////////////////////////////////////////////////////
+////////// Variáveis fixas do Leaflet
 
-        return finalstring;
+//////// Layer rasterizada do Stamen (desativada no momento)
+const tonerUrl = "http://{S}tile.stamen.com/toner-lite/{Z}/{X}/{Y}.png";
+////////// Função para reduzir referências na URL da Stamen para caixa baixa
+const url = tonerUrl.replace(/({[A-Z]})/g, s => s.toLowerCase());
+////////// Centro do Brasil!
+const latlng = L.latLng(-16, -55);
+
+////////// Definições antigas; aplicar layer rasterizada ao mapa
+// var layer = new L.StamenTileLayer("toner");
+////////// Definições antigas; aplicar layer rasterizada ao mapa
+// const tiles = L.tileLayer(url, {
+//   subdomains: ['', 'a.', 'b.', 'c.', 'd.'],
+//   // minZoom: 0,
+//   maxZoom: 7,
+//   detectRetina: true,
+//   opacity: 0.35,
+//   type: 'png',
+//   attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>'
+// }),
+// latlng = L.latLng(-10, -55);;
+
+
+////////////////////////////////
+////////// Controle de dados
+
+////////// Cálculo de posição de div absoluta na página; usar para marcadores no mapa
+function offset(el) {
+    var rect = el.getBoundingClientRect(),
+    scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+    scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    return { top: rect.top , left: rect.left }
+}
+
+// MODIFICAR REGRA // MODIFICAR REGRA // MODIFICAR REGRA // MODIFICAR REGRA
+////////// Controla preenchimento da ficha lateral sem dados
+function missingData(data,div,extradiv) {
+    if (data === 'Dados não disponíveis') {
+        // console.log(div);
+        d3.select(div).select('span.red_dot').remove();
+
+        const previous = d3.select(div).select('p');
+
+        console.log(previous);
+
+        previous
+        .append('span')
+        .attr('class', 'red_dot')
+        .html(' *')
+        ;
+
+        if (extradiv===undefined){
+          d3.select(div).style('opacity',0);
+        } else {
+          d3.select(div).select(extradiv).style('opacity',0);
+        }
+        return '.';
+
     } else {
+      if (extradiv===undefined){
+        d3.select(div).style('opacity',1);
+      } else {
+        d3.select(div).select(extradiv).style('opacity',1);
+      }
+        d3.select(div).select('span.red_dot').remove();
         return data;
     }
 }
 
+// MODIFICAR REGRA // MODIFICAR REGRA // MODIFICAR REGRA // MODIFICAR REGRA
+// controla preenchimento de dados inexistentes
 function fillDiv(div,data,extradiv){
   if (extradiv === undefined){
-    d3.select(div).html(missingData(data))
+    d3.select(div).text(missingData(data,div))
   } else {
-    d3.select(div).select(extradiv).html(missingData(data))
+    d3.select(div).select(extradiv).text(missingData(data,div,extradiv))
   }
 }
+
+///////// Função para checar estado do botão
+// function checkButtonState(this,d,i,nodes){
+//
+//   let currentDivText = d3.select(this).text();
+//
+//   d3.selectAll('.button')
+//     .classed('active', (d, i, nodes) => {
+//       const node = d3.select(nodes[i]);
+//       const node_text = node._groups[0][0].textContent;
+//       console.log(currentDivText);
+//       console.log(node_text);
+//       if (node_text === currentDivText) {
+//           return true } else {
+//           return false
+//         }
+//     }
+//   )
+// }
 
 
 
@@ -28,29 +109,6 @@ fetch(myRequest)
   .then(data => {
 
     console.log(data.municipios)
-    // var layer = new L.StamenTileLayer("toner");
-
-    const tonerUrl = "http://{S}tile.stamen.com/toner-lite/{Z}/{X}/{Y}.png";
-
-    const url = tonerUrl.replace(/({[A-Z]})/g, s => s.toLowerCase());
-
-    // const tiles = L.tileLayer(url, {
-    //   subdomains: ['', 'a.', 'b.', 'c.', 'd.'],
-    //   // minZoom: 0,
-    //   maxZoom: 7,
-    //   detectRetina: true,
-    //   opacity: 0.35,
-    //   type: 'png',
-    //   attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>'
-    // }),
-    // latlng = L.latLng(-10, -55);;
-
-    let latlng = L.latLng(-16, -55);;
-    // var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		// 		maxZoom: 7,
-		// 		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Points &copy 2012 LINZ'
-		// 	}),
-		// 	latlng = L.latLng(-10, -55);
 
 		var map = L.map('map', {center: latlng, zoom: 4.4, maxZoom: 8, minZoom: 4
       // , layers: [tiles]
@@ -62,8 +120,9 @@ fetch(myRequest)
 
     iconSize:     [16, 22], // size of the icon
     shadowSize:   [16, 12], // size of the shadow
-    iconAnchor:   [16, 22], // point of the icon which will correspond to marker's location
-    shadowAnchor: [8, 10],  // the same for the shadow
+    // iconAnchor:   [16, 22], // point of the icon which will correspond to marker's location
+    iconAnchor:   [8, 22], // point of the icon which will correspond to marker's location
+    shadowAnchor: [0, 10],  // the same for the shadow
     popupAnchor:  [-8, -5] // point from which the popup should open relative to the iconAnchor
     });
 
@@ -151,8 +210,9 @@ fetch(myRequest)
       var adulto = a['30_até_59_anos']
       var idoso = a['acima_de_60']
 
-
 			var marker = L.marker(L.latLng(a.lat, a.long), {
+        lat: a.lat,
+        long: a.long,
         icon: purpleIcon,
         cidade: a.cidade,
         sistemas: a.sistemas,
@@ -176,9 +236,9 @@ fetch(myRequest)
 
 		}
 
-    markers.on('click',function(e){
+    markers.on('mousedown',function(e){
 
-      d3.select('div#s01').html(e.layer.options.cidade)
+      d3.select('div#s01').html('<h3>' + e.layer.options.cidade + '</h3>')
 
       let mData = e.layer.options
       let s = mData.sistemas;
@@ -187,15 +247,32 @@ fetch(myRequest)
 
       let lista_veiculo = [mData.bicicletas,mData.bicicletas_elétricas,mData.patinetes_elétricos]
 
-      d3.selectAll('.buttonfilter').remove()
+      d3.selectAll('.button').remove()
       d3.selectAll('.bike').remove()
       d3.selectAll('.bike_el').remove()
       d3.selectAll('.pat_el').remove()
       //insert todos
-      d3.select('div.s03').insert('div').attr('class', 'buttonfilter').html('Todos').on('click',function(){
+      d3.select('div.s03').insert('div').attr('class', 'button').html('Todos').on('click',function(){
+
+
+        let currentDivText = d3.select(this).text();
+
+        d3.selectAll('.button')
+          .classed('active', (d, i, nodes) => {
+            const node = d3.select(nodes[i]);
+            const node_text = node._groups[0][0].textContent;
+            console.log(currentDivText);
+            console.log(node_text);
+            if (node_text === currentDivText) {
+                return true } else {
+                return false
+              }
+          }
+        )
+
         console.log(mData);
         perc_veiculos(mData)
-        fillDiv('div.s04',mData['emissões_de_co2_evitadas'],'.bignumber')
+        fillDiv('div.s04',(mData['emissões_de_co2_evitadas']+' kg'),'.bignumber')
         fillDiv('div#s05_01',mData['estações'],'.bignumber')
         fillDiv('div#s05_02',mData['veiculos'],'.bignumber')
         fillDiv('div#s06_01',mData['viagens_diárias'],'.bignumber')
@@ -230,11 +307,29 @@ fetch(myRequest)
         let jovens = sist['15_até_29_anos'];
         let adultos = sist['30_até_59_anos'];
         let idosos = sist['acima_de_60']
-        // d3.selectAll('.buttonfilter').remove()
-        d3.select('div.s03').insert('div').attr('class', 'buttonfilter').html(sist.sistema).on('click',function(){
-          // d3.select('.buttonfilter').remove()
+        // d3.selectAll('.button').remove()
+        d3.select('div.s03').insert('div').attr('class', 'button').html(sist.sistema).on('click',function(){
+
+          let currentDivText = d3.select(this).text();
+
+          d3.selectAll('.button')
+            .classed('active', (d, i, nodes) => {
+              const node = d3.select(nodes[i]);
+              const node_text = node._groups[0][0].textContent;
+              console.log(currentDivText);
+              console.log(node_text);
+              if (node_text === currentDivText) {
+                  return true } else {
+                  return false
+                }
+            }
+          )
+
+
+
+          // d3.select('.button').remove()
           perc_veiculos(sist)
-          // d3.select('div.s03').insert('div').attr('class', 'buttonfilter').html('Todos').on('click',function(mData){
+          // d3.select('div.s03').insert('div').attr('class', 'button').html('Todos').on('click',function(mData){
           //   console.log(mData);
           //   perc_veiculos(mData)
           //   fillDiv('div.s04',mData['emissões_de_co2_evitadas'],'.bignumber')
@@ -279,45 +374,56 @@ fetch(myRequest)
       fillDiv('div.s08',mData['acima_de_60'],'.sessenta')
 
     })
+    markers.on('mouseover',function(e){
+
+      let mData = e.layer.options;
+      let cidade = mData.cidade;
+
+      let currentLat = mData.lat;
+      let currentLong = mData.long;
+
+      let replacePx = str => str.replace('px','');
+
+      let map_left = d3.select('div#map').style('left');
+      let map_top = d3.select('div#map').style('top');
+
+      let coordPoints = map.latLngToContainerPoint([currentLat, currentLong]);
+
+      let cityName = d3
+      .select('body')
+      .append('div')
+      .attr('class', 'nametip')
+      .html(cidade)
+      ;
+
+      var mapdiv = document.getElementById("map");
+      let divOffset = offset(mapdiv);
+
+      let stringX = cityName.style('width');
+      let clearX = stringX.replace('px','')
+      let finalX = (coordPoints.x + divOffset.left) - Number(clearX)/2
+      let finalY = (coordPoints.y + divOffset.top)
+
+
+      cityName
+      .style('left', finalX + 'px')
+      .style('top', finalY + 'px')
+      ;
+
+    })
+    markers.on('mouseout',function(e){
+
+      let mData = e.layer.options
+      let cidade = mData.cidade;
+
+      d3
+      .select('div.nametip')
+      .remove()
+
+    })
 		map.addLayer(markers);
 
 
     }
   )
   ;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		// var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		// 		maxZoom: 18,
-		// 		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Points &copy 2012 LINZ'
-		// 	}),
-		// 	latlng = L.latLng(-37.89, 175.46);
-    //
-		// var map = L.map('map', {center: latlng, zoom: 13, layers: [tiles]});
-    //
-		// var markers = L.markerClusterGroup({ chunkedLoading: true });
-    //
-		// for (var i = 0; i < addressPoints.length; i++) {
-		// 	var a = addressPoints[i];
-		// 	var title = a[2];
-		// 	var marker = L.marker(L.latLng(a[0], a[1]), { title: title });
-		// 	marker.bindPopup(title);
-		// 	markers.addLayer(marker);
-		// }
-    //
-		// map.addLayer(markers);

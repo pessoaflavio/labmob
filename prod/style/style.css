@@ -123,6 +123,7 @@ div.menu a:hover,a:active{
   background-color: #EDEDED;
   flex-grow: 0.55;
   flex-basis: 0;
+  z-index: 4;
 }
 .side{
   background-color: #DFEFEB;
@@ -136,7 +137,7 @@ div.menu a:hover,a:active{
   overflow-y: scroll;
 }
 /* estilo das divs do lado dos dados*/
-#s01,.s03,.s04,.s05,.s06,.s07,.s09{
+.s03,.s04,.s05,.s06,.s07,.s09{
   padding-top: 16px;
   padding-bottom: 16px;
 }
@@ -173,8 +174,18 @@ div.menu a:hover,a:active{
 }
 #s01{
   /* width: auto; */
+
+}
+h3{
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  line-height: 16px;
+  display: inline-block;
+  /* position: absolute;; */
   background-color: black;
-  display: inline;
+  /* display: inline; */
   font-weight: 600;
   color: white;
   font-size: 16px;
@@ -197,7 +208,7 @@ div.menu a:hover,a:active{
 }
 
 /* estilo de detalhes */
-.buttonfilter, .buttonselect {
+.button {
   display: inline-flex;
   border-radius: 10px;
   font-size: 11px;
@@ -206,13 +217,12 @@ div.menu a:hover,a:active{
   height: 20px;
   margin-right: 4px;
   margin-bottom: 4px;
-}
-.buttonfilter {
-  background-color: white;
-}
-.buttonselect {
   background-color: none;
   border: 1px solid black;
+}
+.button.active {
+  background-color: white;
+  border: 1px solid white;
 }
 .bignumber{
   font-size: 35px;
@@ -279,4 +289,24 @@ div.slide{
 .pat_el{
   color:#279BFF;
   background-color: #279BFF
+}
+div.nametip {
+    position: absolute;
+    text-align: center;
+    /* width: 100px; */
+    height: auto;
+    padding: 2px;
+    font-size: 8px;
+    text-transform: uppercase;
+    border: 0px;
+    pointer-events: none;
+    color: grey;
+    z-index: 5;
+}
+.red_dot{
+  font-family: 'IBM Plex Mono';
+  color: #E0375E;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 12px;
 }
