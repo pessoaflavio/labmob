@@ -126,7 +126,7 @@ fetch(myRequest)
     popupAnchor:  [-8, -5] // point from which the popup should open relative to the iconAnchor
     });
 
-		var markers = L.markerClusterGroup({ chunkedLoading: true });
+		var markers = L.markerClusterGroup({ chunkedLoading: true, disableClusteringAtZoom:5,spiderfyOnMaxZoom:false });
 
     const brasil = new Request('data/brazil_new.json')
 
