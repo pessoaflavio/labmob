@@ -24,7 +24,6 @@ const latlng = L.latLng(-16, -55);
 // }),
 // latlng = L.latLng(-10, -55);;
 
-
 ////////////////////////////////
 ////////// Controle de dados
 
@@ -36,16 +35,12 @@ function offset(el) {
     return { top: rect.top , left: rect.left }
 }
 
-// MODIFICAR REGRA // MODIFICAR REGRA // MODIFICAR REGRA // MODIFICAR REGRA
 ////////// Controla preenchimento da ficha lateral sem dados
 function missingData(data,div,extradiv) {
     if (data === 'Dados não disponíveis') {
         // console.log(div);
         d3.select(div).select('span.red_dot').remove();
-
-        const previous = d3.select(div).select('p');
-
-        console.log(previous);
+        const previous = d3.select(div).select('span.divheader');
 
         previous
         .append('span')
@@ -65,44 +60,156 @@ function missingData(data,div,extradiv) {
         d3.select(div).style('opacity',1);
       } else {
         d3.select(div).select(extradiv).style('opacity',1);
-      }
         d3.select(div).select('span.red_dot').remove();
-        return data;
+        if (div==='div.s02'){
+          return new Intl.NumberFormat('de-DE').format(data) + ' kg'
+        } else if (div==='div.s07_01') {
+          return new Intl.NumberFormat('de-DE').format(data) + '%'
+        } else if (div==='div.s07_02') {
+          return new Intl.NumberFormat('de-DE').format(data) + '%'
+        } else {
+          return new Intl.NumberFormat('de-DE').format(data)
+        }
+
+      }
     }
 }
 
-// MODIFICAR REGRA // MODIFICAR REGRA // MODIFICAR REGRA // MODIFICAR REGRA
 // controla preenchimento de dados inexistentes
 function fillDiv(div,data,extradiv){
-  if (extradiv === undefined){
+  if (div === undefined){
     d3.select(div).text(missingData(data,div))
   } else {
     d3.select(div).select(extradiv).text(missingData(data,div,extradiv))
   }
 }
 
-///////// Função para checar estado do botão
-// function checkButtonState(this,d,i,nodes){
-//
-//   let currentDivText = d3.select(this).text();
-//
-//   d3.selectAll('.button')
-//     .classed('active', (d, i, nodes) => {
-//       const node = d3.select(nodes[i]);
-//       const node_text = node._groups[0][0].textContent;
-//       console.log(currentDivText);
-//       console.log(node_text);
-//       if (node_text === currentDivText) {
-//           return true } else {
-//           return false
-//         }
-//     }
-//   )
-// }
+// preenche idades
+function fillAge(a1,a2,a3){
+  if (a1[1] === 'Dados não disponíveis'){
+
+    d3.select('div.s07_02').select('span.red_dot').remove();
+
+    const previous = d3.select('div.s07_02').select('span.divheader');
+
+    previous
+    .append('span')
+    .attr('class', 'red_dot')
+    .html(' *')
+    ;
+
+    d3.select('div.s07_02').select('span.agelist').style('opacity', 0)
+    ;
+
+  } else {
+    console.log(a1[0],a1[1])
+    d3.select('div.s07_02').select('span.red_dot').remove();
+    d3.select('div.s07_02').select('span.agelist').style('opacity', 1)
+    fillDiv('div.s07_02',a1[1],a1[0])
+    fillDiv('div.s07_02',a2[1],a2[0])
+    fillDiv('div.s07_02',a3[1],a3[0])
+  }
+
+}
+
+let scaleLin = d3.scaleLinear()
+    .domain([0, 3000])
+    .range([1, 24.5]);
+
+function fillSVGcircles(div,data,full_data){
+  console.log(full_data)
+
+  let svg = d3
+  .select(div)
+  .select('svg')
+  ;
+
+  let circle = svg
+  .append('circle')
+  .attr('cx',25)
+  .attr('cy',25)
+  ;
 
 
+  if (div === 'div.s05_01'){
+    if (data == null || data == undefined){
+      circle
+      .attr('r',0)
+      ;
+    } else {
+      circle
+      .attr('r',Math.sqrt(scaleLin(data))*3.14)
+      .attr('fill','#33D1C4')
+      ;
+    }
+  } else if (div ==='div.s05_02'){
+    if (data == null || data == undefined){
+      circle
+      .attr('r',0)
+      ;
+    } else {
+      circle
+      .attr('r',Math.sqrt(scaleLin(data))*3.14)
+      .attr('fill','#279BFF')
+      ;
+    }
+  } else if (div ==='div.s05_03'){
+    if (data == null || data == undefined){
+      circle
+      .attr('r',0)
+      ;
+    } else {
+      circle
+      .attr('r',Math.sqrt(scaleLin(data))*3.14)
+      .attr('fill', '#BFB31C')
+      ;
+    }
 
-const myRequest = new Request('data/final_file_labmob_v2.json');
+  }
+
+  svg
+  .on('mousedown',function(){
+    if (div === 'div.s05_01'){
+      d3.select('div.side').style('background-color', '#C6F4E8')
+    } else if (div ==='div.s05_02'){
+      d3.select('div.side').style('background-color', '#D6F1FF')
+    } else {
+      d3.select('div.side').style('background-color', '#FFFFDD')
+    }
+  })
+
+}
+
+// preenche tudo lado direito
+function fillSidePanel(data,svgchecker,optional_data){
+  svgchecker = svgchecker || 1;
+  optional_data = optional_data || 0;
+
+  fillDiv('div.s02',data['emissões_de_co2_evitadas'],'.bignumber')
+
+
+  fillDiv('div.s04',data['veiculos'],'.bignumber')
+
+  fillSVGcircles('div.s05_01',data['bicicletas'],data)
+  fillSVGcircles('div.s05_02',data['bicicletas_elétricas'],data)
+  fillSVGcircles('div.s05_03',data['patinetes_elétricos'],data)
+  fillDiv('div.s05_01',data['bicicletas'],'.smallnumber')
+  fillDiv('div.s05_02',data['bicicletas_elétricas'],'.smallnumber')
+  fillDiv('div.s05_03',data['patinetes_elétricos'],'.smallnumber')
+
+  fillDiv('div.s06_01',data['viagens_diárias'],'.bignumber')
+  fillDiv('div.s06_02',data['média_distância_percorrida_por_dia'],'.bignumber')
+
+  fillDiv('div.s07_01',data['homens'],'.men')
+  fillDiv('div.s07_01',data['mulheres'],'.women')
+  let ageDiv = {d1: 'span.quinze', d2: 'span.trinta', d3: 'span.sessenta'}
+  let ageData = {data1: data['15_até_29_anos'], data2: data['30_até_59_anos'], data3: data['acima_de_60']}
+  fillAge([ageDiv.d1, ageData.data1], [ageDiv.d2, ageData.data2], [ageDiv.d3, ageData.data3])
+  fillDiv('div.s07_03', data['usuários'],'.bignumber')
+
+}
+
+const myRequest = new Request('data/final_file_labmob_v6.json');
 
 fetch(myRequest)
   .then(response => response.json())
@@ -110,19 +217,19 @@ fetch(myRequest)
 
     console.log(data.municipios)
 
-		var map = L.map('map', {center: latlng, zoom: 4.4, maxZoom: 8, minZoom: 4
+
+		var map = L.map('map', {center: latlng, zoom: 4.4, maxZoom: 9, minZoom: 4
       // , layers: [tiles]
     });
 
     var purpleIcon = L.icon({
-    iconUrl: 'img/icon_v2.png',
-    shadowUrl: 'img/shadow_v2.png',
-
-    iconSize:     [16, 22], // size of the icon
-    shadowSize:   [16, 12], // size of the shadow
+    iconUrl: 'img/icon_ball.png',
+    // shadowUrl: 'img/shadow_v2.png',
+    iconSize:     [14, 14], // size of the icon
+    // shadowSize:   [16, 12], // size of the shadow
     // iconAnchor:   [16, 22], // point of the icon which will correspond to marker's location
-    iconAnchor:   [8, 22], // point of the icon which will correspond to marker's location
-    shadowAnchor: [0, 10],  // the same for the shadow
+    iconAnchor:   [8, 14], // point of the icon which will correspond to marker's location
+    // shadowAnchor: [0, 10],  // the same for the shadow
     popupAnchor:  [-8, -5] // point from which the popup should open relative to the iconAnchor
     });
 
@@ -170,39 +277,6 @@ fetch(myRequest)
       }
     }
 
-    function perc_veiculos(ref){
-
-      console.log(ref)
-      let sum_veiculos = [ref.bicicletas,ref.bicicletas_elétricas,ref.patinetes_elétricos]
-
-      let finalNums = sum_veiculos.filter(elem => checkEl(elem)==true)
-
-      let cv = sum_veiculos.map(el => {
-        if (checkEl(el)==false){
-          return 0
-        } else {
-          return el
-        }
-      });
-
-      let max = cv[0] + cv[1] + cv[2]
-
-      let x = d3.scaleLinear()
-          .domain([0, max])
-          .range([0, 100])
-      ;
-
-      function widthCalc(x){
-        return x + '%'
-      }
-
-      console.log(widthCalc(cv[0]))
-
-      d3.select('.graph').insert('div').attr('class', 'bike').style('width',widthCalc(cv[0]))
-      d3.select('.graph').insert('div').attr('class', 'pat_el').style('flex-grow',widthCalc(cv[2]))
-      d3.select('.graph').insert('div').attr('class', 'bike_el').style('flex-grow',widthCalc(cv[1]))
-    }
-
 		for (var i = 0; i < data.municipios.length; i++) {
 			var a = data.municipios[i];
       var title = a.cidade
@@ -229,7 +303,8 @@ fetch(myRequest)
         veiculos: total_veiculos(a),
         '15_até_29_anos': a['15_até_29_anos'],
         '30_até_59_anos': a['30_até_59_anos'],
-        'acima_de_60': a['acima_de_60']
+        'acima_de_60': a['acima_de_60'],
+        modais: a.modais
         });
 			marker.bindPopup(title);
 			markers.addLayer(marker);
@@ -237,26 +312,30 @@ fetch(myRequest)
 		}
 
     markers.on('mousedown',function(e){
+      d3.select('div.s04_00').html('')
 
-      d3.select('div#s01').html('<h3>' + e.layer.options.cidade + '</h3>')
+      d3.select('div.side').style('background-color', '#DFEFEB');
+
+      d3.select('div#s01').html(`<h3>${e.layer.options.cidade}</h3>`)
 
       let mData = e.layer.options
       let s = mData.sistemas;
-
-      d3.select('div.s02').select('.bignumber').html(s.length)
-
       let lista_veiculo = [mData.bicicletas,mData.bicicletas_elétricas,mData.patinetes_elétricos]
 
       d3.selectAll('.button').remove()
       d3.selectAll('.bike').remove()
       d3.selectAll('.bike_el').remove()
       d3.selectAll('.pat_el').remove()
-      //insert todos
-      d3.select('div.s03').insert('div').attr('class', 'button').html('Todos').on('click',function(){
+      d3.selectAll('circle').remove()
 
+      // 03 LAYER TODOS
+      d3.select('div.s03').insert('div').attr('class', 'button').html('Todos').on('click',function(){
+        d3.select('div.s04_00').html('')
+
+        d3.select('div.side').style('background-color', '#DFEFEB');
 
         let currentDivText = d3.select(this).text();
-
+        d3.selectAll('circle').remove()
         d3.selectAll('.button')
           .classed('active', (d, i, nodes) => {
             const node = d3.select(nodes[i]);
@@ -270,29 +349,17 @@ fetch(myRequest)
           }
         )
 
-        console.log(mData);
-        perc_veiculos(mData)
-        fillDiv('div.s04',(mData['emissões_de_co2_evitadas']+' kg'),'.bignumber')
-        fillDiv('div#s05_01',mData['estações'],'.bignumber')
-        fillDiv('div#s05_02',mData['veiculos'],'.bignumber')
-        fillDiv('div#s06_01',mData['viagens_diárias'],'.bignumber')
-        fillDiv('div#s06_03',mData['média_distância_percorrida_por_dia'],'.smallnumber')
-        fillDiv('div#s07_01',mData['usuários'],'.bignumber')
-        fillDiv('div#s07_02',mData['homens'],'.demodata')
-        fillDiv('div#s07_03',mData['mulheres'],'.demodata')
-        fillDiv('div.s08',mData['15_até_29_anos'],'.quinze')
-        fillDiv('div.s08',mData['30_até_59_anos'],'.trinta')
-        fillDiv('div.s08',mData['acima_de_60'],'.sessenta')
+        fillSidePanel(mData);
+
       })
-      //insert all other systems
+
+      // 02 LAYER DE SISTEMAS
       for (var j=0; j<s.length;j++){
 
         let sist = s[j];
         console.log(sist)
 
         let veiculo_sistema = total_veiculos(sist);
-        // let title = sist.title;
-        // let sis = sist.a.sistemas;
         let co2 = sist.emissões_de_co2_evitadas;
         let estacoes = sist.estações;
         let bici = sist.bicicletas;
@@ -303,14 +370,22 @@ fetch(myRequest)
         let usuarios = sist.usuários;
         let mul = sist.mulheres;
         let hom = sist.homens;
-        let veiculos = veiculo_sistema;
+        sist.transp = sist.veiculos;
+        sist.veiculos = veiculo_sistema;
         let jovens = sist['15_até_29_anos'];
         let adultos = sist['30_até_59_anos'];
         let idosos = sist['acima_de_60']
-        // d3.selectAll('.button').remove()
-        d3.select('div.s03').insert('div').attr('class', 'button').html(sist.sistema).on('click',function(){
 
+        d3.select('div.s03').insert('div').attr('class', 'button').html(sist.sistema).on('mousedown',function(){
+          d3.select('div.s04_00').html('')
+          d3.select('div.side').style('background-color', '#DFEFEB');
+          d3.selectAll('circle').remove()
           let currentDivText = d3.select(this).text();
+
+          d3.select('div.s04_00').html(`<span class="divheader">Estações</span>
+          <span class="bignumber"></span>`)
+
+          fillDiv('div.s04_00',estacoes,'.bignumber')
 
           d3.selectAll('.button')
             .classed('active', (d, i, nodes) => {
@@ -325,55 +400,19 @@ fetch(myRequest)
             }
           )
 
+          fillSidePanel(sist)
 
 
-          // d3.select('.button').remove()
-          perc_veiculos(sist)
-          // d3.select('div.s03').insert('div').attr('class', 'button').html('Todos').on('click',function(mData){
-          //   console.log(mData);
-          //   perc_veiculos(mData)
-          //   fillDiv('div.s04',mData['emissões_de_co2_evitadas'],'.bignumber')
-          //   fillDiv('div#s05_01',mData['estações'],'.bignumber')
-          //   fillDiv('div#s05_02',mData['veiculos'],'.bignumber')
-          //   fillDiv('div#s06_01',mData['viagens_diárias'],'.bignumber')
-          //   fillDiv('div#s06_03',mData['média_distância_percorrida_por_dia'],'.smallnumber')
-          //   fillDiv('div#s07_01',mData['usuários'],'.bignumber')
-          //   fillDiv('div#s07_02',mData['homens'],'.demodata')
-          //   fillDiv('div#s07_03',mData['mulheres'],'.demodata')
-          //   fillDiv('div#s07_03',mData['mulheres'],'.demodata')
-          //   fillDiv('div.s08',mData['15_até_29_anos'],'.quinze')
-          //   fillDiv('div.s08',mData['30_até_59_anos'],'.trinta')
-          //   fillDiv('div.s08',mData['acima_de_60'],'.sessenta')
-          // })
-          fillDiv('div.s04',co2,'.bignumber')
-          fillDiv('div#s05_01',estacoes,'.bignumber')
-          fillDiv('div#s05_02',veiculos,'.bignumber')
-          fillDiv('div#s06_01',viagens,'.bignumber')
-          fillDiv('div#s06_03',dist,'.smallnumber')
-          fillDiv('div#s07_01',usuarios,'.bignumber')
-          fillDiv('div#s07_02',hom,'.demodata')
-          fillDiv('div#s07_03',mul,'.demodata')
-          fillDiv('div.s08',jovens,'.quinze')
-          fillDiv('div.s08',adultos,'.trinta')
-          fillDiv('div.s08',idosos,'.sessenta')
         })
 
       }
-      //insert all main fields
-      perc_veiculos(mData)
-      fillDiv('div.s04',mData['emissões_de_co2_evitadas'],'.bignumber')
-      fillDiv('div#s05_01',mData['estações'],'.bignumber')
-      fillDiv('div#s05_02',mData['veiculos'],'.bignumber')
-      fillDiv('div#s06_01',mData['viagens_diárias'],'.bignumber')
-      fillDiv('div#s06_03',mData['média_distância_percorrida_por_dia'],'.smallnumber')
-      fillDiv('div#s07_01',mData['usuários'],'.bignumber')
-      fillDiv('div#s07_02',mData['homens'],'.demodata')
-      fillDiv('div#s07_03',mData['mulheres'],'.demodata')
-      fillDiv('div.s08',mData['15_até_29_anos'],'.quinze')
-      fillDiv('div.s08',mData['30_até_59_anos'],'.trinta')
-      fillDiv('div.s08',mData['acima_de_60'],'.sessenta')
+
+      // 01 PRIMEIRO LAYER DE DADOS DA CIDADE
+      fillSidePanel(mData);
 
     })
+
+    // adicionar nome da cidade por cima do marker com mouse
     markers.on('mouseover',function(e){
 
       let mData = e.layer.options;
@@ -402,7 +441,7 @@ fetch(myRequest)
       let stringX = cityName.style('width');
       let clearX = stringX.replace('px','')
       let finalX = (coordPoints.x + divOffset.left) - Number(clearX)/2
-      let finalY = (coordPoints.y + divOffset.top)
+      let finalY = (coordPoints.y + 100)
 
 
       cityName
@@ -411,6 +450,8 @@ fetch(myRequest)
       ;
 
     })
+
+    // retirar nome da cidade por cima do marker com mouse
     markers.on('mouseout',function(e){
 
       let mData = e.layer.options
@@ -421,8 +462,9 @@ fetch(myRequest)
       .remove()
 
     })
-		map.addLayer(markers);
 
+    // adicionar markers no mapa!
+		map.addLayer(markers);
 
     }
   )
