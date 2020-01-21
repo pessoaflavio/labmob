@@ -50,33 +50,40 @@ function fillDiv(div,data,extradiv){
   }
 }
 
-// preenche idades
-function fillAge(a1,a2,a3){
-  if (a1[1] === 'Dados não disponíveis'){
-
-    d3.select('div.s07_02').select('span.red_dot').remove();
-
-    const previous = d3.select('div.s07_02').select('span.divheader');
-
-    previous
-    .append('span')
-    .attr('class', 'red_dot')
-    .html(' *')
-    ;
-
-    d3.select('div.s07_02').select('span.agelist').style('opacity', 0)
-    ;
-
-  } else {
-    console.log(a1[0],a1[1])
-    d3.select('div.s07_02').select('span.red_dot').remove();
-    d3.select('div.s07_02').select('span.agelist').style('opacity', 1)
-    fillDiv('div.s07_02',a1[1],a1[0])
-    fillDiv('div.s07_02',a2[1],a2[0])
-    fillDiv('div.s07_02',a3[1],a3[0])
-  }
-
+// remove a div temporariamente da UI
+function removeDiv(div){
+  d3.select(div).style('display','none')
 }
+
+removeDiv('div.s07');
+
+// preenche idades
+// function fillAge(a1,a2,a3){
+//   if (a1[1] === 'Dados não disponíveis'){
+//
+//     d3.select('div.s07_02').select('span.red_dot').remove();
+//
+//     const previous = d3.select('div.s07_02').select('span.divheader');
+//
+//     previous
+//     .append('span')
+//     .attr('class', 'red_dot')
+//     .html(' *')
+//     ;
+//
+//     d3.select('div.s07_02').select('span.agelist').style('opacity', 0)
+//     ;
+//
+//   } else {
+//     console.log(a1[0],a1[1])
+//     d3.select('div.s07_02').select('span.red_dot').remove();
+//     d3.select('div.s07_02').select('span.agelist').style('opacity', 1)
+//     fillDiv('div.s07_02',a1[1],a1[0])
+//     fillDiv('div.s07_02',a2[1],a2[0])
+//     fillDiv('div.s07_02',a3[1],a3[0])
+//   }
+//
+// }
 
 function checkEl(elem){
   return Number.isInteger(elem)
@@ -193,12 +200,12 @@ function fillSidePanel(data){
   fillDiv('div.s06_01',data['viagens_diárias'],'.bignumber')
   fillDiv('div.s06_02',data['média_distância_percorrida_por_dia'],'.bignumber')
 
-  fillDiv('div.s07_01',data['homens'],'.men')
-  fillDiv('div.s07_01',data['mulheres'],'.women')
-  let ageDiv = {d1: 'span.quinze', d2: 'span.trinta', d3: 'span.sessenta'}
-  let ageData = {data1: data['15_até_29_anos'], data2: data['30_até_59_anos'], data3: data['acima_de_60']}
-  fillAge([ageDiv.d1, ageData.data1], [ageDiv.d2, ageData.data2], [ageDiv.d3, ageData.data3])
-  fillDiv('div.s07_03', data['usuários'],'.bignumber')
+  // fillDiv('div.s07_01',data['homens'],'.men')
+  // fillDiv('div.s07_01',data['mulheres'],'.women')
+  // let ageDiv = {d1: 'span.quinze', d2: 'span.trinta', d3: 'span.sessenta'}
+  // let ageData = {data1: data['15_até_29_anos'], data2: data['30_até_59_anos'], data3: data['acima_de_60']}
+  // fillAge([ageDiv.d1, ageData.data1], [ageDiv.d2, ageData.data2], [ageDiv.d3, ageData.data3])
+  // fillDiv('div.s07_03', data['usuários'],'.bignumber')
 
   mainHolder
   .select('#s01')

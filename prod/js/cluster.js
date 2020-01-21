@@ -84,6 +84,31 @@ function fillDiv(div,data,extradiv){
   }
 }
 
+// remove a div temporariamente da UI
+function removeDiv(div){
+  d3.select(div).style('display','none')
+}
+
+function showDiv(div,style){
+  d3.select(div).style('display',style)
+}
+
+function checkModalType(data1,data2,data3) {
+
+  let arrayToCheck = [data1,data2,data3]
+
+  for (var i=0;i<=2;i++){
+    if (arrayToCheck[i] === 'Dados não disponíveis') {
+      d3.select('div.s05_0' + (i+1)).style('opacity',0.2)
+      // removeDiv('div.s05_0' + (i+1))
+    } else {
+      d3.select('div.s05_0' + (i+1)).style('opacity',1)
+      // showDiv('div.s05_0' + (i+1), 'flex')
+    }
+  }
+
+}
+
 // preenche idades
 function fillAge(a1,a2,a3){
   if (a1[1] === 'Dados não disponíveis'){
@@ -222,18 +247,34 @@ fetch(myRequest)
       // , layers: [tiles]
     });
 
-    var purpleIcon = L.icon({
-    iconUrl: 'img/icon_ball.png',
-    // shadowUrl: 'img/shadow_v2.png',
-    iconSize:     [14, 14], // size of the icon
-    // shadowSize:   [16, 12], // size of the shadow
-    // iconAnchor:   [16, 22], // point of the icon which will correspond to marker's location
-    iconAnchor:   [8, 14], // point of the icon which will correspond to marker's location
-    // shadowAnchor: [0, 10],  // the same for the shadow
-    popupAnchor:  [-8, -5] // point from which the popup should open relative to the iconAnchor
-    });
+    // var purpleIcon = L.icon({
+    // iconUrl: 'img/icon_ball.png',
+    // // shadowUrl: 'img/shadow_v2.png',
+    // iconSize:     [14, 14], // size of the icon
+    // // shadowSize:   [16, 12], // size of the shadow
+    // // iconAnchor:   [16, 22], // point of the icon which will correspond to marker's location
+    // iconAnchor:   [8, 14], // point of the icon which will correspond to marker's location
+    // // shadowAnchor: [0, 10],  // the same for the shadow
+    // popupAnchor:  [-8, -5] // point from which the popup should open relative to the iconAnchor
+    // });
 
-		var markers = L.markerClusterGroup({ chunkedLoading: true, disableClusteringAtZoom:5,spiderfyOnMaxZoom:false });
+    // var textIcon = L.divIcon({
+    //   className: 'nametip',
+    //   html: `<img src="img/icon_ball.png" width="14px" height="14px" ><br>${cidade}`,
+    //   iconAnchor:   [8, 14],
+    //   popupAnchor:  [-8, -5]
+    // })
+
+		var markers = L.markerClusterGroup({
+      chunkedLoading: true,
+      disableClusteringAtZoom:5,
+      spiderfyOnMaxZoom:false,
+      polygonOptions: {
+        stroke: false,
+        fill: false
+        }
+      }
+    );
 
     const brasil = new Request('data/brazil_new.json')
 
@@ -284,10 +325,37 @@ fetch(myRequest)
       var adulto = a['30_até_59_anos']
       var idoso = a['acima_de_60']
 
-			var marker = L.marker(L.latLng(a.lat, a.long), {
+			// var marker = L.marker(L.latLng(a.lat, a.long), {
+      //   lat: a.lat,
+      //   long: a.long,
+      //   icon: purpleIcon,
+      //   cidade: a.cidade,
+      //   sistemas: a.sistemas,
+      //   emissões_de_co2_evitadas: a.emissões_de_co2_evitadas,
+      //   estações: a.estações,
+      //   bicicletas: a.bicicletas,
+      //   bicicletas_elétricas: a.bicicletas_elétricas,
+      //   patinetes_elétricos: a.patinetes_elétricos,
+      //   viagens_diárias: a.viagens_diárias,
+      //   média_distância_percorrida_por_dia: a.média_distância_percorrida_por_dia,
+      //   usuários: a.usuários,
+      //   mulheres: a.mulheres,
+      //   homens: a.homens,
+      //   veiculos: total_veiculos(a),
+      //   '15_até_29_anos': a['15_até_29_anos'],
+      //   '30_até_59_anos': a['30_até_59_anos'],
+      //   'acima_de_60': a['acima_de_60'],
+      //   modais: a.modais
+      //   });
+      var marker2 = L.marker(L.latLng(a.lat, a.long), {
         lat: a.lat,
         long: a.long,
-        icon: purpleIcon,
+        icon: L.divIcon({
+          className: 'nametip',
+          html: `<img src="img/icon_ball.png" width="14px" height="14px" ><br>${a.cidade}`,
+          iconAnchor: [8, 14],
+          popupAnchor: [-8, -5]
+        }),
         cidade: a.cidade,
         sistemas: a.sistemas,
         emissões_de_co2_evitadas: a.emissões_de_co2_evitadas,
@@ -306,8 +374,9 @@ fetch(myRequest)
         'acima_de_60': a['acima_de_60'],
         modais: a.modais
         });
-			marker.bindPopup(title);
-			markers.addLayer(marker);
+			marker2.bindPopup(title);
+			// markers.addLayer(marker);
+      markers.addLayer(marker2);
 
 		}
 
@@ -315,6 +384,10 @@ fetch(myRequest)
       d3.select('div.s04_00').html('')
 
       d3.select('div.side').style('background-color', '#DFEFEB');
+
+      for (var i=0;i<=2;i++){
+          d3.select('div.s05_0' + (i+1)).style('opacity',1)
+      }
 
       d3.select('div#s01').html(`<h3>${e.layer.options.cidade}</h3>`)
 
@@ -330,7 +403,12 @@ fetch(myRequest)
 
       // 03 LAYER TODOS
       d3.select('div.s03').insert('div').attr('class', 'button').html('Todos').on('click',function(){
+        removeDiv('div.s07');
         d3.select('div.s04_00').html('')
+
+        for (var i=0;i<=2;i++){
+            d3.select('div.s05_0' + (i+1)).style('opacity',1)
+        }
 
         d3.select('div.side').style('background-color', '#DFEFEB');
 
@@ -377,6 +455,9 @@ fetch(myRequest)
         let idosos = sist['acima_de_60']
 
         d3.select('div.s03').insert('div').attr('class', 'button').html(sist.sistema).on('mousedown',function(){
+
+          checkModalType(bici,b_ele,pat);
+
           d3.select('div.s04_00').html('')
           d3.select('div.side').style('background-color', '#DFEFEB');
           d3.selectAll('circle').remove()
@@ -399,6 +480,9 @@ fetch(myRequest)
                 }
             }
           )
+          showDiv('div.s07','flex')
+
+
 
           fillSidePanel(sist)
 
@@ -409,59 +493,60 @@ fetch(myRequest)
 
       // 01 PRIMEIRO LAYER DE DADOS DA CIDADE
       fillSidePanel(mData);
+      removeDiv('div.s07');
 
     })
 
-    // adicionar nome da cidade por cima do marker com mouse
-    markers.on('mouseover',function(e){
-
-      let mData = e.layer.options;
-      let cidade = mData.cidade;
-
-      let currentLat = mData.lat;
-      let currentLong = mData.long;
-
-      let replacePx = str => str.replace('px','');
-
-      let map_left = d3.select('div#map').style('left');
-      let map_top = d3.select('div#map').style('top');
-
-      let coordPoints = map.latLngToContainerPoint([currentLat, currentLong]);
-
-      let cityName = d3
-      .select('body')
-      .append('div')
-      .attr('class', 'nametip')
-      .html(cidade)
-      ;
-
-      var mapdiv = document.getElementById("map");
-      let divOffset = offset(mapdiv);
-
-      let stringX = cityName.style('width');
-      let clearX = stringX.replace('px','')
-      let finalX = (coordPoints.x + divOffset.left) - Number(clearX)/2
-      let finalY = (coordPoints.y + 100)
-
-
-      cityName
-      .style('left', finalX + 'px')
-      .style('top', finalY + 'px')
-      ;
-
-    })
-
-    // retirar nome da cidade por cima do marker com mouse
-    markers.on('mouseout',function(e){
-
-      let mData = e.layer.options
-      let cidade = mData.cidade;
-
-      d3
-      .select('div.nametip')
-      .remove()
-
-    })
+    // // adicionar nome da cidade por cima do marker com mouse
+    // markers.on('mouseover',function(e){
+    //
+    //   let mData = e.layer.options;
+    //   let cidade = mData.cidade;
+    //
+    //   let currentLat = mData.lat;
+    //   let currentLong = mData.long;
+    //
+    //   let replacePx = str => str.replace('px','');
+    //
+    //   let map_left = d3.select('div#map').style('left');
+    //   let map_top = d3.select('div#map').style('top');
+    //
+    //   let coordPoints = map.latLngToContainerPoint([currentLat, currentLong]);
+    //
+    //   let cityName = d3
+    //   .select('body')
+    //   .append('div')
+    //   .attr('class', 'nametip')
+    //   .html(cidade)
+    //   ;
+    //
+    //   var mapdiv = document.getElementById("map");
+    //   let divOffset = offset(mapdiv);
+    //
+    //   let stringX = cityName.style('width');
+    //   let clearX = stringX.replace('px','')
+    //   let finalX = (coordPoints.x + divOffset.left) - Number(clearX)/2
+    //   let finalY = (coordPoints.y + 100)
+    //
+    //
+    //   cityName
+    //   .style('left', finalX + 'px')
+    //   .style('top', finalY + 'px')
+    //   ;
+    //
+    // })
+    //
+    // // retirar nome da cidade por cima do marker com mouse
+    // markers.on('mouseout',function(e){
+    //
+    //   let mData = e.layer.options
+    //   let cidade = mData.cidade;
+    //
+    //   d3
+    //   .select('div.nametip')
+    //   .remove()
+    //
+    // })
 
     // adicionar markers no mapa!
 		map.addLayer(markers);
