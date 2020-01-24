@@ -6,7 +6,7 @@
 
     <link rel="stylesheet" href="style/leaflet.css">
     <script src="js/leaflet-src.js"></script>
-    <link rel="stylesheet" href="style/screen.css" />
+     <link rel="stylesheet" href="style/screen.css" />
     <link rel="stylesheet" href="style/MarkerCluster.css" />
     <link rel="stylesheet" href="style/MarkerCluster.Default.css" />
     <script src="js/leaflet.markercluster-src.js"></script>
@@ -21,7 +21,7 @@
       <div class='sides'></div>
       <div class='total'>
         <div class="menu">
-          <a href="index.html"><img src="img/logo.svg" alt="logo" width="190px" height="100px"></a>
+          <img src="img/logo.svg" alt="logo" width="190px" height="100px">
 
           <ul class="menu">
             <li class="menuitem"><a href="index.html">Brasil</a></li>
@@ -32,12 +32,11 @@
           </ul>
           <a href="index.html">PT/EN</a>
         </div>
-        <div id="main">
-
-          <div class="side">
-            hey
+        <div class='artigo'>
+          <div class="head_geral">
+            Operadoras
           </div>
-          <div id="map">
+          <div class="doiscol">
 
           </div>
         </div>
@@ -45,9 +44,24 @@
       <div class='sides'></div>
     </div>
   </body>
-
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <!-- <script src="js/main.js" charset="utf-8"  type="text/babel"></script> -->
-  <script src="js/cluster2.js" charset="utf-8"  type="text/babel"></script>
+  <script type="text/babel">
 
+
+    d3.json('data/final_file_labmob_v2.json').then(data => {
+      console.log(data)
+      d3
+      .select('div.doiscol')
+      .selectAll('p')
+      .data(data.municipios)
+      .enter()
+      .append('p')
+      .html(d=>d.cidade)
+      ;
+
+    });
+
+  </script>
+  <!-- <script src="js/main.js" charset="utf-8"  type="module"></script>
+  <script src="js/cluster.js" charset="utf-8"  type="module"></script> -->
 </html>
