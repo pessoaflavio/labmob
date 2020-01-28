@@ -301,19 +301,30 @@
     color:#279BFF;
     background-color: #279BFF
   }
-  div.nametip {
-      position: absolute;
-      text-align: left;
-      height: auto;
-      padding: 2px;
-      font-size: 10px;
-      letter-spacing: 0.5px;
-      font-weight: 700;
-      text-transform: uppercase;
-      border: 0px;
-      pointer-events: none;
-      color: grey;
-      z-index: 5;
+  .cleartip{
+    background-color: none;
+    border: none;
+  }
+  .nametip2{
+    color: grey;
+  }
+  .nametip{
+    /* color: #999FBB; */
+    color: grey;
+  }
+  .nametip, .nametip2 {
+    position: absolute;
+    text-align: left;
+    height: auto;
+    padding: 2px;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    /* font-weight: 700; */
+    text-transform: uppercase;
+    border: 0px;
+    pointer-events: none;
+    z-index: 5;
+    /* background-color: #CFD1D5; */
   }
   .red_dot{
     font-family: 'IBM Plex Mono';

@@ -11,18 +11,19 @@ const url = tonerUrl.replace(/({[A-Z]})/g, s => s.toLowerCase());
 const latlng = L.latLng(-16, -55);
 
 ////////// Definições antigas; aplicar layer rasterizada ao mapa
-// var layer = new L.StamenTileLayer("toner");
+// var map_layer = new L.StamenTileLayer("toner");
 ////////// Definições antigas; aplicar layer rasterizada ao mapa
-// const tiles = L.tileLayer(url, {
-//   subdomains: ['', 'a.', 'b.', 'c.', 'd.'],
-//   // minZoom: 0,
-//   maxZoom: 7,
-//   detectRetina: true,
-//   opacity: 0.35,
-//   type: 'png',
-//   attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>'
-// }),
+const tiles = L.tileLayer(url, {
+  subdomains: ['', 'a.', 'b.', 'c.', 'd.'],
+  // minZoom: 0,
+  maxZoom: 10,
+  detectRetina: true,
+  opacity: 0.25,
+  type: 'png',
+  attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>'
+});
 // latlng = L.latLng(-10, -55);;
+
 
 ////////////////////////////////
 ////////// Controle de dados
@@ -234,16 +235,13 @@ function fillSidePanel(data,svgchecker,optional_data){
 
 }
 
-const myRequest = new Request('data/final_file_labmob_v6.json');
+const myRequest = new Request('data/final_file_labmob_v8.json');
 
 fetch(myRequest)
   .then(response => response.json())
   .then(data => {
-
     console.log(data.municipios)
-
-
-		var map = L.map('map', {center: latlng, zoom: 4.4, maxZoom: 9, minZoom: 4
+		var map = L.map('map', {center: latlng, zoom: 4.4, maxZoom: 10, minZoom: 4, zoomDelta: 2
       // , layers: [tiles]
     });
 
@@ -265,17 +263,6 @@ fetch(myRequest)
     //   popupAnchor:  [-8, -5]
     // })
 
-		var markers = L.markerClusterGroup({
-      chunkedLoading: true,
-      disableClusteringAtZoom:5,
-      spiderfyOnMaxZoom:false,
-      polygonOptions: {
-        stroke: false,
-        fill: false
-        }
-      }
-    );
-
     const brasil = new Request('data/brazil_new.json')
 
     let myStyle = {
@@ -292,6 +279,16 @@ fetch(myRequest)
                         .then(data => L.geoJSON(data,{style: myStyle}).addTo(map));
 
     // console.log(brasil_data)
+    // var markers = L.markerClusterGroup({
+    //   chunkedLoading: true,
+    //   disableClusteringAtZoom:5,
+    //   spiderfyOnMaxZoom:false,
+    //   polygonOptions: {
+    //     stroke: false,
+    //     fill: false
+    //     }
+    //   }
+    // );
 
     function checkEl(elem){
       return Number.isInteger(elem)
@@ -318,69 +315,289 @@ fetch(myRequest)
       }
     }
 
-		for (var i = 0; i < data.municipios.length; i++) {
-			var a = data.municipios[i];
-      var title = a.cidade
-      var jovem = a['15_até_29_anos']
-      var adulto = a['30_até_59_anos']
-      var idoso = a['acima_de_60']
+		// for (var i = 0; i < data.municipios.length; i++) {
+		// 	var a = data.municipios[i];
+    //   var title = a.cidade
+    //   var jovem = a['15_até_29_anos']
+    //   var adulto = a['30_até_59_anos']
+    //   var idoso = a['acima_de_60']
+    //
+		// 	// var marker = L.marker(L.latLng(a.lat, a.long), {
+    //   //   lat: a.lat,
+    //   //   long: a.long,
+    //   //   icon: purpleIcon,
+    //   //   cidade: a.cidade,
+    //   //   sistemas: a.sistemas,
+    //   //   emissões_de_co2_evitadas: a.emissões_de_co2_evitadas,
+    //   //   estações: a.estações,
+    //   //   bicicletas: a.bicicletas,
+    //   //   bicicletas_elétricas: a.bicicletas_elétricas,
+    //   //   patinetes_elétricos: a.patinetes_elétricos,
+    //   //   viagens_diárias: a.viagens_diárias,
+    //   //   média_distância_percorrida_por_dia: a.média_distância_percorrida_por_dia,
+    //   //   usuários: a.usuários,
+    //   //   mulheres: a.mulheres,
+    //   //   homens: a.homens,
+    //   //   veiculos: total_veiculos(a),
+    //   //   '15_até_29_anos': a['15_até_29_anos'],
+    //   //   '30_até_59_anos': a['30_até_59_anos'],
+    //   //   'acima_de_60': a['acima_de_60'],
+    //   //   modais: a.modais
+    //   //   });
+    //   var marker2 = L.marker(L.latLng(a.lat, a.long), {
+    //     lat: a.lat,
+    //     long: a.long,
+    //     icon: L.divIcon({
+    //       className: 'nametip',
+    //       html: `<img src="img/icon_ball.png" width="14px" height="14px" ><br>${a.cidade}`,
+    //       iconAnchor: [8, 14],
+    //       popupAnchor: [-8, -5]
+    //     }),
+    //     cidade: a.cidade,
+    //     sistemas: a.sistemas,
+    //     emissões_de_co2_evitadas: a.emissões_de_co2_evitadas,
+    //     estações: a.estações,
+    //     bicicletas: a.bicicletas,
+    //     bicicletas_elétricas: a.bicicletas_elétricas,
+    //     patinetes_elétricos: a.patinetes_elétricos,
+    //     viagens_diárias: a.viagens_diárias,
+    //     média_distância_percorrida_por_dia: a.média_distância_percorrida_por_dia,
+    //     usuários: a.usuários,
+    //     mulheres: a.mulheres,
+    //     homens: a.homens,
+    //     veiculos: total_veiculos(a),
+    //     '15_até_29_anos': a['15_até_29_anos'],
+    //     '30_até_59_anos': a['30_até_59_anos'],
+    //     'acima_de_60': a['acima_de_60'],
+    //     modais: a.modais
+    //     });
+		// 	// marker2.bindPopup(title);
+		// 	// markers.addLayer(marker);
+    //   markers.addLayer(marker2);
+    //
+		// }
 
-			// var marker = L.marker(L.latLng(a.lat, a.long), {
-      //   lat: a.lat,
-      //   long: a.long,
-      //   icon: purpleIcon,
-      //   cidade: a.cidade,
-      //   sistemas: a.sistemas,
-      //   emissões_de_co2_evitadas: a.emissões_de_co2_evitadas,
-      //   estações: a.estações,
-      //   bicicletas: a.bicicletas,
-      //   bicicletas_elétricas: a.bicicletas_elétricas,
-      //   patinetes_elétricos: a.patinetes_elétricos,
-      //   viagens_diárias: a.viagens_diárias,
-      //   média_distância_percorrida_por_dia: a.média_distância_percorrida_por_dia,
-      //   usuários: a.usuários,
-      //   mulheres: a.mulheres,
-      //   homens: a.homens,
-      //   veiculos: total_veiculos(a),
-      //   '15_até_29_anos': a['15_até_29_anos'],
-      //   '30_até_59_anos': a['30_até_59_anos'],
-      //   'acima_de_60': a['acima_de_60'],
-      //   modais: a.modais
-      //   });
-      var marker2 = L.marker(L.latLng(a.lat, a.long), {
-        lat: a.lat,
-        long: a.long,
-        icon: L.divIcon({
-          className: 'nametip',
-          html: `<img src="img/icon_ball.png" width="14px" height="14px" ><br>${a.cidade}`,
+    // map(data.municipios)
+    const estados_listados = data.municipios.map(cidade => cidade.estado)
+    const estados_unicos = [...new Set(estados_listados)]
+    console.log(estados_unicos);
+
+    for (var j = 0; j < estados_unicos.length; j++){
+      let grupo_cidades = []
+      let current_cities = data.municipios.filter(cidade => cidade.estado == estados_unicos[j])
+
+      for (var i = 0; i < current_cities.length; i++) {
+        var a = current_cities[i];
+
+        var icon1 = L.divIcon({
+          className: 'cleartip',
+          iconSize: [200, 12],
+          html: `<img src="img/icon_ball.png" width="10px" height="10px" ><br><span class="nametip">${a.cidade}</span>`,
           iconAnchor: [8, 14],
           popupAnchor: [-8, -5]
-        }),
-        cidade: a.cidade,
-        sistemas: a.sistemas,
-        emissões_de_co2_evitadas: a.emissões_de_co2_evitadas,
-        estações: a.estações,
-        bicicletas: a.bicicletas,
-        bicicletas_elétricas: a.bicicletas_elétricas,
-        patinetes_elétricos: a.patinetes_elétricos,
-        viagens_diárias: a.viagens_diárias,
-        média_distância_percorrida_por_dia: a.média_distância_percorrida_por_dia,
-        usuários: a.usuários,
-        mulheres: a.mulheres,
-        homens: a.homens,
-        veiculos: total_veiculos(a),
-        '15_até_29_anos': a['15_até_29_anos'],
-        '30_até_59_anos': a['30_até_59_anos'],
-        'acima_de_60': a['acima_de_60'],
-        modais: a.modais
-        });
-			// marker2.bindPopup(title);
-			// markers.addLayer(marker);
-      markers.addLayer(marker2);
+        })
+        var icon2 = L.divIcon({
+          className: 'cleartip',
+          iconSize: [200, 12],
+          html: `<img src="img/icon_ball.png" width="10px" height="10px" ><br><span class="nametip2">${a.cidade}</span>`,
+          iconAnchor: [8, 14],
+          popupAnchor: [-8, -5]
+        })
 
-		}
+        console.log(a)
+        var title = a.cidade
+        var jovem = a['15_até_29_anos']
+        var adulto = a['30_até_59_anos']
+        var idoso = a['acima_de_60']
+        var marker2 = L.marker(L.latLng(a.lat, a.long), {
+          lat: a.lat,
+          long: a.long,
+          icon: L.divIcon({
+            className: 'cleartip',
+            iconSize: [200, 12],
+            html: `<img src="img/icon_ball.png" width="10px" height="10px" ><br><span class="nametip">${a.cidade}</span>`,
+            iconAnchor: [8, 14],
+            popupAnchor: [-8, -5]
+          }),
+          cidade: a.cidade,
+          sistemas: a.sistemas,
+          emissões_de_co2_evitadas: a.emissões_de_co2_evitadas,
+          estações: a.estações,
+          bicicletas: a.bicicletas,
+          bicicletas_elétricas: a.bicicletas_elétricas,
+          patinetes_elétricos: a.patinetes_elétricos,
+          viagens_diárias: a.viagens_diárias,
+          média_distância_percorrida_por_dia: a.média_distância_percorrida_por_dia,
+          usuários: a.usuários,
+          mulheres: a.mulheres,
+          homens: a.homens,
+          veiculos: total_veiculos(a),
+          '15_até_29_anos': a['15_até_29_anos'],
+          '30_até_59_anos': a['30_até_59_anos'],
+          'acima_de_60': a['acima_de_60'],
+          modais: a.modais
+          });
+          console.log(marker2.options.icon.options.html)
+  			// marker2.bindPopup(title);
+  			// markers.addLayer(marker);
+        grupo_cidades.push(marker2);
+
+  		}
+      var estados = L.layerGroup(grupo_cidades);
+      console.log(grupo_cidades)
+
+      var markers = L.markerClusterGroup({
+        chunkedLoading: true,
+        zoomToBoundsOnClick: true,
+        disableClusteringAtZoom:6,
+        spiderfyOnMaxZoom:false,
+        polygonOptions: {
+          stroke: false,
+          fill: false
+          }
+        }
+      );
+      markers.on('mousedown',function(e){
+        d3.select('div.s04_00').html('')
+
+        d3.select('div.side').style('background-color', '#DFEFEB');
+
+        for (var i=0;i<=2;i++){
+            d3.select('div.s05_0' + (i+1)).style('opacity',1)
+        }
+
+        d3.select('div#s01').html(`<h3>${e.layer.options.cidade}</h3>`)
+
+        let mData = e.layer.options
+        let s = mData.sistemas;
+        let lista_veiculo = [mData.bicicletas,mData.bicicletas_elétricas,mData.patinetes_elétricos]
+
+        d3.selectAll('.button').remove()
+        d3.selectAll('.bike').remove()
+        d3.selectAll('.bike_el').remove()
+        d3.selectAll('.pat_el').remove()
+        d3.selectAll('circle').remove()
+
+        // 03 LAYER TODOS
+        d3.select('div.s03').insert('div').attr('class', 'button').html('Todos').on('click',function(){
+          removeDiv('div.s07');
+          d3.select('div.s04_00').html('')
+
+          for (var i=0;i<=2;i++){
+              d3.select('div.s05_0' + (i+1)).style('opacity',1)
+          }
+
+          d3.select('div.side').style('background-color', '#DFEFEB');
+
+          let currentDivText = d3.select(this).text();
+          d3.selectAll('circle').remove()
+          d3.selectAll('.button')
+            .classed('active', (d, i, nodes) => {
+              const node = d3.select(nodes[i]);
+              const node_text = node._groups[0][0].textContent;
+              console.log(currentDivText);
+              console.log(node_text);
+              if (node_text === currentDivText) {
+                  return true } else {
+                  return false
+                }
+            }
+          )
+
+          fillSidePanel(mData);
+
+        })
+
+        // 02 LAYER DE SISTEMAS
+        for (var j=0; j<s.length;j++){
+
+          let sist = s[j];
+          console.log(sist)
+
+          let veiculo_sistema = total_veiculos(sist);
+          let co2 = sist.emissões_de_co2_evitadas;
+          let estacoes = sist.estações;
+          let bici = sist.bicicletas;
+          let b_ele = sist.bicicletas_elétricas;
+          let pat = sist.patinetes_elétricos;
+          let viagens = sist.viagens_diárias;
+          let dist = sist.média_distância_percorrida_por_dia;
+          let usuarios = sist.usuários;
+          let mul = sist.mulheres;
+          let hom = sist.homens;
+          sist.transp = sist.veiculos;
+          sist.veiculos = veiculo_sistema;
+          let jovens = sist['15_até_29_anos'];
+          let adultos = sist['30_até_59_anos'];
+          let idosos = sist['acima_de_60']
+
+          d3.select('div.s03').insert('div').attr('class', 'button').html(sist.sistema).on('mousedown',function(){
+
+            checkModalType(bici,b_ele,pat);
+
+            d3.select('div.s04_00').html('')
+            d3.select('div.side').style('background-color', '#DFEFEB');
+            d3.selectAll('circle').remove()
+            let currentDivText = d3.select(this).text();
+
+            d3.select('div.s04_00').html(`<span class="divheader">Estações</span>
+            <span class="bignumber"></span>`)
+
+            fillDiv('div.s04_00',estacoes,'.bignumber')
+
+            d3.selectAll('.button')
+              .classed('active', (d, i, nodes) => {
+                const node = d3.select(nodes[i]);
+                const node_text = node._groups[0][0].textContent;
+                console.log(currentDivText);
+                console.log(node_text);
+                if (node_text === currentDivText) {
+                    return true } else {
+                    return false
+                  }
+              }
+            )
+            showDiv('div.s07','flex')
+
+
+
+            fillSidePanel(sist)
+
+
+          })
+
+        }
+
+        // 01 PRIMEIRO LAYER DE DADOS DA CIDADE
+        fillSidePanel(mData);
+        removeDiv('div.s07');
+
+      });
+      markers.on('clusterclick', function (a) {
+      	// a.layer is actually a cluster
+        console.log(a.layer);
+        a.layer.zoomToBounds({padding: [20, 20]});
+      	// console.log('cluster ' + a.layer.getAllChildMarkers().length);
+      });
+      // markers.on('mouseover',function(e){
+      //   // console.log(e.layer)
+      //   // e.layer.setIcon(icon2)
+      //   e.layer.setZIndexOffset(1000)
+      //
+      // });
+      // markers.on('mouseout',function(e){
+      //   // console.log(e.layer)
+      //   // e.layer.setIcon(icon1)
+      //   e.layer.setZIndexOffset(0)
+      //
+      // });
+      markers.addLayer(estados);
+      map.addLayer(markers);
+    }
+    // console.log(city_holder)
 
     markers.on('mousedown',function(e){
+
       d3.select('div.s04_00').html('')
 
       d3.select('div.side').style('background-color', '#DFEFEB');
@@ -499,40 +716,40 @@ fetch(myRequest)
 
     // // adicionar nome da cidade por cima do marker com mouse
     // markers.on('mouseover',function(e){
-    //
-    //   let mData = e.layer.options;
-    //   let cidade = mData.cidade;
-    //
-    //   let currentLat = mData.lat;
-    //   let currentLong = mData.long;
-    //
-    //   let replacePx = str => str.replace('px','');
-    //
-    //   let map_left = d3.select('div#map').style('left');
-    //   let map_top = d3.select('div#map').style('top');
-    //
-    //   let coordPoints = map.latLngToContainerPoint([currentLat, currentLong]);
-    //
-    //   let cityName = d3
-    //   .select('body')
-    //   .append('div')
-    //   .attr('class', 'nametip')
-    //   .html(cidade)
-    //   ;
-    //
-    //   var mapdiv = document.getElementById("map");
-    //   let divOffset = offset(mapdiv);
-    //
-    //   let stringX = cityName.style('width');
-    //   let clearX = stringX.replace('px','')
-    //   let finalX = (coordPoints.x + divOffset.left) - Number(clearX)/2
-    //   let finalY = (coordPoints.y + 100)
-    //
-    //
-    //   cityName
-    //   .style('left', finalX + 'px')
-    //   .style('top', finalY + 'px')
-    //   ;
+    //   console.log(e.layer)
+    //   // let mData = e.layer.options;
+    //   // let cidade = mData.cidade;
+    //   //
+    //   // let currentLat = mData.lat;
+    //   // let currentLong = mData.long;
+    //   //
+    //   // let replacePx = str => str.replace('px','');
+    //   //
+    //   // let map_left = d3.select('div#map').style('left');
+    //   // let map_top = d3.select('div#map').style('top');
+    //   //
+    //   // let coordPoints = map.latLngToContainerPoint([currentLat, currentLong]);
+    //   //
+    //   // let cityName = d3
+    //   // .select('body')
+    //   // .append('div')
+    //   // .attr('class', 'nametip')
+    //   // .html(cidade)
+    //   // ;
+    //   //
+    //   // var mapdiv = document.getElementById("map");
+    //   // let divOffset = offset(mapdiv);
+    //   //
+    //   // let stringX = cityName.style('width');
+    //   // let clearX = stringX.replace('px','')
+    //   // let finalX = (coordPoints.x + divOffset.left) - Number(clearX)/2
+    //   // let finalY = (coordPoints.y + 100)
+    //   //
+    //   //
+    //   // cityName
+    //   // .style('left', finalX + 'px')
+    //   // .style('top', finalY + 'px')
+    //   // ;
     //
     // })
     //
@@ -549,7 +766,7 @@ fetch(myRequest)
     // })
 
     // adicionar markers no mapa!
-		map.addLayer(markers);
+		// map.addLayer(markers);
 
     }
   )
